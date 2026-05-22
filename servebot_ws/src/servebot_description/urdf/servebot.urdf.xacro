@@ -1,0 +1,226 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="servebot">
+
+<!-- Include Gazebo Parameters -->
+<xacro:include filename="$(find servebot_description)/urdf/servebot_gazebo.xacro" />
+
+
+<!-- BASE FOOTPRINT -->
+  <link name="base_footprint"/>
+
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child  link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- BASE LINK -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="3.8279058168706735e-16 -3.8279058168706733e-17 0.09845474977897602" rpy="0 0 0"/>
+      <mass value="5.132071293842641"/>
+      <inertia ixx="0.11579" iyy="0.127513" izz="0.241747" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://servebot_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dark_gray">
+        <color rgba="0.3 0.3 0.3 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <!-- <origin xyz="-0.250 -0.2225 0.0395" rpy="1.57 0.0 1.57"/> -->
+      <geometry>
+        <mesh filename="package://servebot_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- RIGHT WHEEL -->
+  <joint name="wheel_right_joint" type="continuous">
+    <parent link="base_link"/>
+    <child  link="wheel_right"/>
+    <origin xyz="0 -0.2225 0.0625" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <link name="wheel_right">
+    <inertial>
+      <origin xyz="8.603722720054142e-15 0.019888712241653395 0.0" rpy="0 0 0"/>
+      <mass value="0.344575772731954"/>
+      <inertia ixx="0.000361" iyy="0.000669" izz="0.000361" ixy="0.0" iyz="0.0" ixz="0.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14 0 0"/>
+      <geometry>
+        <mesh filename="package://servebot_description/meshes/wheel_right.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14 0 0"/>
+      <geometry>
+        <mesh filename="package://servebot_description/meshes/wheel_right.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- LEFT WHEEL -->
+  <joint name="wheel_left_joint" type="continuous">
+    <parent link="base_link"/>
+    <child  link="wheel_left"/>
+    <origin xyz="0 0.2225 0.0625" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <link name="wheel_left">
+    <inertial>
+      <origin xyz="8.603722720054142e-15 -0.019888712241653395 1.3877787807814457e-17" rpy="0 0 0"/>
+      <mass value="0.344575772731954"/>
+      <inertia ixx="0.000361" iyy="0.000669" izz="0.000361" ixy="-0.0" iyz="0.0" ixz="-0.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://servebot_description/meshes/wheel_left.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1.0"/>
+      </material>
+    </visual>
+    <collision>
+       <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://servebot_description/meshes/wheel_left.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- CASTER FRONT RIGHT -->
+  <joint name="caster_front_right_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="caster_front_right"/>
+    <origin xyz="0.1975 -0.1625 0.0795" rpy="0 0 0"/>
+  </joint>
+
+  <link name="caster_front_right">
+    <inertial>
+      <origin xyz="-2.220446049250313e-16 0.0 -0.03687697337696345" rpy="0 0 0"/>
+      <mass value="0.13177511785394527"/>
+      <inertia ixx="7.7e-05" iyy="7.7e-05" izz="3.2e-05" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+      <geometry>
+        <mesh filename="package://servebot_description/meshes/caster_front_right.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="light_gray">
+        <color rgba="0.7 0.7 0.7 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+      <geometry>
+        <mesh filename="package://servebot_description/meshes/caster_front_right.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- CASTER FRONT LEFT -->
+  <joint name="caster_front_left_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="caster_front_left"/>
+    <origin xyz="0.1975 0.1625 0.0795" rpy="0 0 0"/>
+  </joint>
+
+  <link name="caster_front_left">
+    <inertial>
+      <origin xyz="-2.220446049250313e-16 0.0 -0.03687697337696341" rpy="0 0 0"/>
+      <mass value="0.13177511785394527"/>
+      <inertia ixx="7.7e-05" iyy="7.7e-05" izz="3.2e-05" ixy="0.0" iyz="0.0" ixz="0.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+      <geometry>
+        <mesh filename="package://servebot_description/meshes/caster_front_left.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="light_gray">
+        <color rgba="0.7 0.7 0.7 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+      <geometry>
+        <mesh filename="package://servebot_description/meshes/caster_front_left.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- CASTER REAR RIGHT -->
+  <joint name="caster_rear_right_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="caster_rear_right"/>
+    <origin xyz="-0.1975 -0.1625 0.0795" rpy="0 0 0"/>
+  </joint>
+
+  <link name="caster_rear_right">
+    <inertial>
+      <origin xyz="-1.942890293094024e-16 0.0 -0.03687697337696345" rpy="0 0 0"/>
+      <mass value="0.13177511785394527"/>
+      <inertia ixx="7.7e-05" iyy="7.7e-05" izz="3.2e-05" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+      <geometry>
+        <mesh filename="package://servebot_description/meshes/caster_rear_right.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="light_gray">
+        <color rgba="0.7 0.7 0.7 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+      <geometry>
+        <mesh filename="package://servebot_description/meshes/caster_rear_right.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- CASTER REAR LEFT -->
+  <joint name="caster_rear_left_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="caster_rear_left"/>
+    <origin xyz="-0.1975 0.1625 0.0795" rpy="0 0 0"/>
+  </joint>
+
+  <link name="caster_rear_left">
+    <inertial>
+      <origin xyz="-1.942890293094024e-16 0.0 -0.03687697337696341" rpy="0 0 0"/>
+      <mass value="0.13177511785394527"/>
+      <inertia ixx="7.7e-05" iyy="7.7e-05" izz="3.2e-05" ixy="0.0" iyz="0.0" ixz="0.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+      <geometry>
+        <mesh filename="package://servebot_description/meshes/caster_rear_left.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="light_gray">
+        <color rgba="0.7 0.7 0.7 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+      <geometry>
+        <mesh filename="package://servebot_description/meshes/caster_rear_left.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+
+
+</robot>

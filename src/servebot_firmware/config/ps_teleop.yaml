@@ -35,9 +35,9 @@ teleop_twist_joy_node:
 
     # Axes
     axis_linear:
-      x: 1                    # Left stick Y  → forward / backward
+      x: 3                    # Left stick Y  → forward / backward
     axis_angular:
-      yaw: 3                  # Right stick X → turn
+      yaw: 1                  # Right stick X → turn
 
     # Scale — maps joystick ±1.0 to cmd_vel ±scale
     # Transmitter multiplies by 100 → ESP32 J command ±100

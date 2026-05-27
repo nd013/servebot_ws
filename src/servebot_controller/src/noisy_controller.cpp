@@ -14,7 +14,7 @@ NoisyController::NoisyController(const std::string& name)
                                   , y_(0.0)
                                   , theta_(0.0)
 {
-    declare_parameter("wheel_radius", 0.062);
+    declare_parameter("wheel_radius", 0.060);
     declare_parameter("wheel_separation", 0.480);
     wheel_radius_ = get_parameter("wheel_radius").as_double();
     wheel_separation_ = get_parameter("wheel_separation").as_double();

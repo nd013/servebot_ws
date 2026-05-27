@@ -1,0 +1,56 @@
+# PS4 / PS5 controller config for teleop_twist_joy
+#
+# Axis map (standard Linux HID driver):
+#   0 = Left  stick X      (left/right)
+#   1 = Left  stick Y      (up = +1.0)   ← forward / backward
+#   2 = L2 trigger         (-1 idle, +1 pressed)
+#   3 = Right stick X      (left = +1.0) ← yaw / turn
+#   4 = Right stick Y
+#   5 = R2 trigger         (-1 idle, +1 pressed)
+#   6 = D-pad X
+#   7 = D-pad Y
+#
+# Button map:
+#   0 = Cross (X)
+#   1 = Circle
+#   2 = Square
+#   3 = Triangle
+#   4 = L1   ← hold to enable motion (deadman)
+#   5 = R1   ← hold for turbo speed
+#   6 = L2 (digital)
+#   7 = R2 (digital)
+#   8 = Create / Share
+#   9 = Options
+#  10 = L3 (left stick click)
+#  11 = R3 (right stick click)
+#  12 = PS button
+#  13 = Touchpad click
+
+teleop_twist_joy_node:
+  ros__parameters:
+
+    # Deadman switch — must hold L1 to move
+    enable_button: 4          # L1
+    enable_turbo_button: 5    # R1 (optional turbo)
+
+    # Axes
+    axis_linear:
+      x: 1                    # Left stick Y  → forward / backward
+    axis_angular:
+      yaw: 3                  # Right stick X → turn
+
+    # Scale — maps joystick ±1.0 to cmd_vel ±scale
+    # Transmitter multiplies by 100 → ESP32 J command ±100
+    scale_linear:
+      x: 1.0
+    scale_angular:
+      yaw: 1.0
+
+    # Turbo scale (when R1 held)
+    scale_linear_turbo:
+      x: 1.0
+    scale_angular_turbo:
+      yaw: 1.0
+
+    # Publish TwistStamped — required by diff_drive_controller (use_stamped_vel: true)
+    publish_stamped_twist: true

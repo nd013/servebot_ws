@@ -1,0 +1,10 @@
+<library path="servebot_interface">
+  <class name="servebot_firmware/ServebotInterface"
+         type="servebot_firmware::ServebotInterface"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      ESP32 hardware interface for Servebot — communicates via POSIX serial (UART2).
+      Sends J commands (tank-drive) and reads encoder ticks (E messages).
+    </description>
+  </class>
+</library>

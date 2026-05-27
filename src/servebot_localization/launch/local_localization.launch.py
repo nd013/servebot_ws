@@ -13,7 +13,13 @@ def generate_launch_description():
         default_value="False",
     )
 
+    use_sim_time_arg = DeclareLaunchArgument(
+        "use_sim_time",
+        default_value="True",
+    )
+
     use_python = LaunchConfiguration("use_python")
+    use_sim_time = LaunchConfiguration("use_sim_time")
 
     static_transform_publisher = Node(
         package="tf2_ros",
@@ -29,23 +35,29 @@ def generate_launch_description():
         executable="ekf_node",
         name="ekf_filter_node",
         output="screen",
-        parameters=[os.path.join(get_package_share_directory("servebot_localization"), "config", "ekf.yaml")],
+        parameters=[
+            os.path.join(get_package_share_directory("servebot_localization"), "config", "ekf.yaml"),
+            {"use_sim_time": use_sim_time}
+        ],
     )
 
     imu_republisher_py = Node(
         package="servebot_localization",
         executable="imu_republisher.py",
+        parameters=[{"use_sim_time": use_sim_time}],
         condition=IfCondition(use_python),
     )
 
     imu_republisher_cpp = Node(
         package="servebot_localization",
         executable="imu_republisher",
+        parameters=[{"use_sim_time": use_sim_time}],
         condition=UnlessCondition(use_python),
     )
 
     return LaunchDescription([
         use_python_arg,
+        use_sim_time_arg,
         static_transform_publisher,
         robot_localization,
         imu_republisher_py,

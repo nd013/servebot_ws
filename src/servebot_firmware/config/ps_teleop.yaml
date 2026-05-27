@@ -42,15 +42,15 @@ teleop_twist_joy_node:
     # Scale — maps joystick ±1.0 to cmd_vel ±scale
     # Transmitter multiplies by 100 → ESP32 J command ±100
     scale_linear:
-      x: 1.0
+      x: -1.0
     scale_angular:
-      yaw: 1.0
+      yaw: -1.0
 
     # Turbo scale (when R1 held)
     scale_linear_turbo:
-      x: 1.0
+      x: -1.0
     scale_angular_turbo:
-      yaw: 1.0
+      yaw: -1.0
 
     # Publish TwistStamped — required by diff_drive_controller (use_stamped_vel: true)
     publish_stamped_twist: true

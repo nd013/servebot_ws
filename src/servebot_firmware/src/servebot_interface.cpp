@@ -69,8 +69,8 @@ int ServebotInterface::openSerial(const std::string & port, int baudrate)
 // ── Private: parse one line received from ESP32 ───────────────────────────
 //
 // Joint mapping (from servebot_ros2_control.xacro):
-//   index 0  =  wheel_right_joint  ←  enc2  (M2, RIGHT)
-//   index 1  =  wheel_left_joint   ←  enc1  (M1, LEFT)
+//   index 0  =  wheel_right_joint  ←  enc1  (M1, RIGHT)
+//   index 1  =  wheel_left_joint   ←  enc2  (M2, LEFT)
 
 void ServebotInterface::parseSerialLine(const std::string & line,
                                         const rclcpp::Duration & period)
@@ -86,8 +86,8 @@ void ServebotInterface::parseSerialLine(const std::string & line,
     // Both encoders are negated: motors run in negative AccelStepper direction for
     // physical forward motion, so raw ticks are negative for forward. Negating aligns
     // the encoder convention with ROS (positive position = forward).
-    double pos_right = static_cast<double>(-e2) * TICKS_TO_RAD;  // enc2 → index 0
-    double pos_left  = static_cast<double>(-e1) * TICKS_TO_RAD;  // enc1 → index 1
+    double pos_right = static_cast<double>(-e1) * TICKS_TO_RAD;  // enc1 → index 0 (right)
+    double pos_left  = static_cast<double>(-e2) * TICKS_TO_RAD;  // enc2 → index 1 (left)
 
     if (dt > 0.0) {
       velocity_states_[0] = (pos_right - prev_position_[0]) / dt;
@@ -98,8 +98,8 @@ void ServebotInterface::parseSerialLine(const std::string & line,
     position_states_[1] = pos_left;
     prev_position_[0]   = pos_right;
     prev_position_[1]   = pos_left;
-    prev_enc_[0]        = e2;
-    prev_enc_[1]        = e1;
+    prev_enc_[0]        = e1;
+    prev_enc_[1]        = e2;
     return;
   }
 

@@ -14,22 +14,6 @@ find_package(geometry_msgs REQUIRED)
 find_package(hardware_interface QUIET)
 find_package(pluginlib QUIET)
 
-# ── Executables ───────────────────────────────────────────────────────────
-
-add_executable(simple_serial_transmitter src/simple_serial_transmitter.cpp)
-ament_target_dependencies(simple_serial_transmitter
-  rclcpp std_msgs geometry_msgs)
-
-add_executable(simple_serial_receiver src/simple_serial_receiver.cpp)
-ament_target_dependencies(simple_serial_receiver
-  rclcpp std_msgs)
-
-install(TARGETS
-  simple_serial_transmitter
-  simple_serial_receiver
-  DESTINATION lib/${PROJECT_NAME}
-)
-
 # ── Hardware Interface Plugin (optional — needs ros-jazzy-ros2-control) ──
 
 if(hardware_interface_FOUND AND pluginlib_FOUND)
@@ -68,6 +52,7 @@ endif()
 install(PROGRAMS
   servebot_firmware/simple_serial_transmitter.py
   servebot_firmware/simple_serial_receiver.py
+  servebot_firmware/mpu6050_driver.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

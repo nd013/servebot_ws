@@ -83,11 +83,11 @@ void ServebotInterface::parseSerialLine(const std::string & line,
     double dt = period.seconds();
 
     // ticks → radians
-    // Both encoders are negated: motors run in negative AccelStepper direction for
-    // physical forward motion, so raw ticks are negative for forward. Negating aligns
-    // the encoder convention with ROS (positive position = forward).
-    double pos_right = static_cast<double>(-e2) * TICKS_TO_RAD;  // enc2 → index 0
-    double pos_left  = static_cast<double>(-e1) * TICKS_TO_RAD;  // enc1 → index 1
+    // enc1 = M1 = LEFT wheel,  enc2 = M2 = RIGHT wheel  (matches servebot_firmware.ino)
+    // Left motor (M1): forward motion → enc1 counts UP   → no negation needed
+    // Right motor (M2): mirror-mounted → forward motion → enc2 counts DOWN → negate to get positive
+    double pos_left  = static_cast<double>( e1) * TICKS_TO_RAD;  // enc1 → LEFT  (M1) → index 1
+    double pos_right = static_cast<double>(-e2) * TICKS_TO_RAD;  // enc2 → RIGHT (M2) → index 0
 
     if (dt > 0.0) {
       velocity_states_[0] = (pos_right - prev_position_[0]) / dt;
@@ -98,8 +98,8 @@ void ServebotInterface::parseSerialLine(const std::string & line,
     position_states_[1] = pos_left;
     prev_position_[0]   = pos_right;
     prev_position_[1]   = pos_left;
-    prev_enc_[0]        = e2;
-    prev_enc_[1]        = e1;
+    prev_enc_[0]        = e1;
+    prev_enc_[1]        = e2;
     return;
   }
 

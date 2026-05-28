@@ -17,8 +17,9 @@
   <depend>hardware_interface</depend>
   <depend>pluginlib</depend>
 
-  <!-- Python serial library (needed by .py nodes) -->
+  <!-- Python dependencies for .py nodes -->
   <exec_depend>python3-serial</exec_depend>
+  <exec_depend>python3-smbus</exec_depend>
   <exec_depend>joy</exec_depend>
   <exec_depend>teleop_twist_joy</exec_depend>
 

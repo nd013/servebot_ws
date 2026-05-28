@@ -10,7 +10,7 @@ ekf_filter_node:
 
       map_frame: map
       odom_frame: odom
-      base_link_frame: base_footprint   # Real robot: EKF directly drives odom→base_footprint
+      base_link_frame: base_footprint_ekf  # Real robot: EKF filtered frame alongside diff_drive
       world_frame: odom
 
       # IMU — real MPU6050 via imu_republisher → imu_ekf topic

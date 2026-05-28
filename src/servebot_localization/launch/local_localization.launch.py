@@ -44,7 +44,7 @@ def generate_launch_description():
         condition=IfCondition(sim_mode),
     )
 
-    # Static TF only needed for simulation (base_footprint_ekf → imu_link_ekf)
+    # Static TF: base_footprint_ekf → imu_link_ekf (both sim and real robot)
     static_transform_publisher = Node(
         package="tf2_ros",
         executable="static_transform_publisher",
@@ -52,10 +52,9 @@ def generate_launch_description():
                    "--qx", "0", "--qy", "0", "--qz", "0", "--qw", "1",
                    "--frame-id", "base_footprint_ekf",
                    "--child-frame-id", "imu_link_ekf"],
-        condition=IfCondition(sim_mode),
     )
 
-    # ── Real Robot EKF (base_footprint, servebot_controller/odom) ────────────
+    # ── Real Robot EKF (base_footprint_ekf, servebot_controller/odom) ────────
     robot_localization_real = Node(
         package="robot_localization",
         executable="ekf_node",

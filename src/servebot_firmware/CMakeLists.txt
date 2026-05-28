@@ -52,6 +52,7 @@ endif()
 install(PROGRAMS
   servebot_firmware/simple_serial_transmitter.py
   servebot_firmware/simple_serial_receiver.py
+  servebot_firmware/mpu6050_driver.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

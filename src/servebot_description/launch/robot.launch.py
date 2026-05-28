@@ -82,6 +82,16 @@ def generate_launch_description():
         condition=IfCondition(sim_mode)
     )
 
+    # ── REAL ROBOT: MPU6050 IMU driver ───────────────────────────────────────
+
+    imu_node = Node(
+        package="servebot_firmware",
+        executable="mpu6050_driver.py",
+        name="mpu6050_driver",
+        output="screen",
+        condition=UnlessCondition(sim_mode)
+    )
+
     # ── REAL ROBOT: ros2_control_node (controller_manager + hardware) ─────
 
     ros2_control_node = Node(
@@ -124,6 +134,7 @@ def generate_launch_description():
         robot_state_publisher,
         gazebo_launch,
         ros2_control_node,
+        imu_node,
         joint_state_broadcaster_spawner,
         diff_drive_spawner,
     ])

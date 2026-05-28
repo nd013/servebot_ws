@@ -10,21 +10,16 @@ SMPLRT_DIV   = 0x19
 CONFIG       = 0x1A
 GYRO_CONFIG  = 0x1B
 INT_ENABLE   = 0x38
-ACCEL_XOUT_H = 0x3B
-ACCEL_YOUT_H = 0x3D
-ACCEL_ZOUT_H = 0x3F
-GYRO_XOUT_H  = 0x43
-GYRO_YOUT_H  = 0x45
-GYRO_ZOUT_H  = 0x47
+ACCEL_XOUT_H = 0x3B   # block-read base: accel(6) + temp(2) + gyro(6) = 14 bytes
 DEVICE_ADDRESS = 0x68
 
 # ── Scale factors ─────────────────────────────────────────────────────────
-# Accelerometer: default ±2 g range → 16384 LSB/g → divide by 16384/9.80665 = 1670.13
-ACCEL_SCALE = 1670.13   # LSB → m/s²
+import math
+# Accelerometer: ±2 g → 16384 LSB/g
+ACCEL_SCALE = 16384.0 / 9.80665        # LSB per (m/s²)  ≈ 1670.70
 
-# Gyroscope: GYRO_CONFIG=0x00 → FS_SEL=0 → ±250°/s → 131 LSB/°/s
-#            divide by 131 * (180/π) = 7509.87 to get rad/s
-GYRO_SCALE  = 7509.87   # LSB → rad/s
+# Gyroscope: FS_SEL=0 → ±250°/s → 131 LSB/°/s → convert to rad/s
+GYRO_SCALE  = 131.0 * (180.0 / math.pi)  # LSB per (rad/s) ≈ 7505.75
 
 
 class MPU6050Driver(Node):
@@ -40,20 +35,19 @@ class MPU6050Driver(Node):
         self.imu_msg_ = Imu()
         self.imu_msg_.header.frame_id = "imu_link"
 
-        # Orientation is not computed by this node
+        # No orientation computed here — imu_filter_madgwick handles fusion
         self.imu_msg_.orientation_covariance[0] = -1.0
 
-        # Approximate noise covariances (diagonal)
-        self.imu_msg_.linear_acceleration_covariance[0] = 0.01
-        self.imu_msg_.linear_acceleration_covariance[4] = 0.01
-        self.imu_msg_.linear_acceleration_covariance[8] = 0.01
+        # Noise covariances — tuned for MPU6050 at 100 Hz with DLPF 44 Hz
+        self.imu_msg_.linear_acceleration_covariance[0] = 0.04
+        self.imu_msg_.linear_acceleration_covariance[4] = 0.04
+        self.imu_msg_.linear_acceleration_covariance[8] = 0.04
 
-        self.imu_msg_.angular_velocity_covariance[0] = 0.001
-        self.imu_msg_.angular_velocity_covariance[4] = 0.001
-        self.imu_msg_.angular_velocity_covariance[8] = 0.001
+        self.imu_msg_.angular_velocity_covariance[0] = 0.02
+        self.imu_msg_.angular_velocity_covariance[4] = 0.02
+        self.imu_msg_.angular_velocity_covariance[8] = 0.02
 
-        # 100 Hz
-        self.timer_ = self.create_timer(0.01, self.timer_callback)
+        self.timer_ = self.create_timer(0.01, self.timer_callback)  # 100 Hz
 
     def timer_callback(self):
         if not self.is_connected_:
@@ -61,21 +55,26 @@ class MPU6050Driver(Node):
             return
 
         try:
-            acc_x = self.read_raw_data(ACCEL_XOUT_H)
-            acc_y = self.read_raw_data(ACCEL_YOUT_H)
-            acc_z = self.read_raw_data(ACCEL_ZOUT_H)
+            # Read 14 bytes atomically starting at ACCEL_XOUT_H:
+            #   [0-1] accel_x  [2-3] accel_y  [4-5] accel_z
+            #   [6-7] temp     (skipped)
+            #   [8-9] gyro_x   [10-11] gyro_y  [12-13] gyro_z
+            data = self.bus_.read_i2c_block_data(DEVICE_ADDRESS, ACCEL_XOUT_H, 14)
 
-            gyro_x = self.read_raw_data(GYRO_XOUT_H)
-            gyro_y = self.read_raw_data(GYRO_YOUT_H)
-            gyro_z = self.read_raw_data(GYRO_ZOUT_H)
+            ax = self._s16(data[0],  data[1])
+            ay = self._s16(data[2],  data[3])
+            az = self._s16(data[4],  data[5])
+            gx = self._s16(data[8],  data[9])
+            gy = self._s16(data[10], data[11])
+            gz = self._s16(data[12], data[13])
 
-            self.imu_msg_.linear_acceleration.x = acc_x / ACCEL_SCALE
-            self.imu_msg_.linear_acceleration.y = acc_y / ACCEL_SCALE
-            self.imu_msg_.linear_acceleration.z = acc_z / ACCEL_SCALE
+            self.imu_msg_.linear_acceleration.x = ax / ACCEL_SCALE
+            self.imu_msg_.linear_acceleration.y = ay / ACCEL_SCALE
+            self.imu_msg_.linear_acceleration.z = az / ACCEL_SCALE
 
-            self.imu_msg_.angular_velocity.x = gyro_x / GYRO_SCALE
-            self.imu_msg_.angular_velocity.y = gyro_y / GYRO_SCALE
-            self.imu_msg_.angular_velocity.z = gyro_z / GYRO_SCALE
+            self.imu_msg_.angular_velocity.x = gx / GYRO_SCALE
+            self.imu_msg_.angular_velocity.y = gy / GYRO_SCALE
+            self.imu_msg_.angular_velocity.z = gz / GYRO_SCALE
 
             self.imu_msg_.header.stamp = self.get_clock().now().to_msg()
             self.imu_pub_.publish(self.imu_msg_)
@@ -87,24 +86,26 @@ class MPU6050Driver(Node):
     def init_i2c(self):
         try:
             self.bus_ = smbus.SMBus(1)
-            self.bus_.write_byte_data(DEVICE_ADDRESS, SMPLRT_DIV, 7)   # 1 kHz / (7+1) = 125 Hz sample rate
-            self.bus_.write_byte_data(DEVICE_ADDRESS, PWR_MGMT_1, 1)   # wake up, use X gyro clock
-            self.bus_.write_byte_data(DEVICE_ADDRESS, CONFIG, 0)        # no DLPF
-            self.bus_.write_byte_data(DEVICE_ADDRESS, GYRO_CONFIG, 0)   # FS_SEL=0 → ±250°/s
-            self.bus_.write_byte_data(DEVICE_ADDRESS, INT_ENABLE, 1)    # data-ready interrupt
+            # 1 kHz / (9+1) = 100 Hz — matches timer rate
+            self.bus_.write_byte_data(DEVICE_ADDRESS, SMPLRT_DIV,  9)
+            # Wake up, select X gyro as clock source (more stable than internal 8 MHz)
+            self.bus_.write_byte_data(DEVICE_ADDRESS, PWR_MGMT_1,  1)
+            # DLPF_CFG=3 → 44 Hz accel / 42 Hz gyro bandwidth — filters stepper motor vibration
+            self.bus_.write_byte_data(DEVICE_ADDRESS, CONFIG,       3)
+            # FS_SEL=0 → ±250°/s gyro range (highest resolution, sufficient for diff-drive)
+            self.bus_.write_byte_data(DEVICE_ADDRESS, GYRO_CONFIG,  0)
+            # Enable data-ready interrupt
+            self.bus_.write_byte_data(DEVICE_ADDRESS, INT_ENABLE,   1)
             self.is_connected_ = True
             self.get_logger().info("MPU6050: connected on I2C bus 1 at 0x68")
         except OSError:
             self.get_logger().warn("MPU6050: I2C connection failed — will retry")
             self.is_connected_ = False
 
-    def read_raw_data(self, addr):
-        high = self.bus_.read_byte_data(DEVICE_ADDRESS, addr)
-        low  = self.bus_.read_byte_data(DEVICE_ADDRESS, addr + 1)
-        value = (high << 8) | low
-        if value > 32768:
-            value -= 65536
-        return value
+    @staticmethod
+    def _s16(high, low):
+        v = (high << 8) | low
+        return v - 65536 if v >= 32768 else v
 
 
 def main():

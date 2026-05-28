@@ -101,6 +101,9 @@ def generate_launch_description():
             {"robot_description": robot_description},
             controllers_yaml,
             {"use_sim_time": False},
+            # Real robot: EKF (local_localization.launch.py) owns odom→base_footprint TF
+            # so disable diff_drive's TF to avoid conflict
+            {"servebot_controller.ros__parameters.enable_odom_tf": False},
         ],
         output="screen",
         condition=UnlessCondition(sim_mode)

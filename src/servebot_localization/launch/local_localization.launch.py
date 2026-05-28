@@ -15,7 +15,7 @@ def generate_launch_description():
 
     use_sim_time_arg = DeclareLaunchArgument(
         "use_sim_time",
-        default_value="True",
+        default_value="False",  # False for real robot (no /clock topic)
     )
 
     use_python = LaunchConfiguration("use_python")

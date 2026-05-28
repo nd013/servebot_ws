@@ -68,13 +68,19 @@ class MPU6050Driver(Node):
             gy = self._s16(data[10], data[11])
             gz = self._s16(data[12], data[13])
 
-            self.imu_msg_.linear_acceleration.x = ax / ACCEL_SCALE
-            self.imu_msg_.linear_acceleration.y = ay / ACCEL_SCALE
-            self.imu_msg_.linear_acceleration.z = az / ACCEL_SCALE
+            # MPU6050 is mounted rotated 180° around Z:
+            #   chip X points backward → negate to get ROS forward (+X)
+            #   chip Y points right    → negate to get ROS left    (+Y)
+            #   chip Z points up       → keep as-is               (+Z)
+            self.imu_msg_.linear_acceleration.x = -ax / ACCEL_SCALE
+            self.imu_msg_.linear_acceleration.y = -ay / ACCEL_SCALE
+            self.imu_msg_.linear_acceleration.z =  az / ACCEL_SCALE
 
-            self.imu_msg_.angular_velocity.x = gx / GYRO_SCALE
-            self.imu_msg_.angular_velocity.y = gy / GYRO_SCALE
-            self.imu_msg_.angular_velocity.z = gz / GYRO_SCALE
+            # Angular velocity: same 180° Z rotation
+            #   gx, gy negate;  gz unchanged (rotation around Z unaffected)
+            self.imu_msg_.angular_velocity.x = -gx / GYRO_SCALE
+            self.imu_msg_.angular_velocity.y = -gy / GYRO_SCALE
+            self.imu_msg_.angular_velocity.z =  gz / GYRO_SCALE
 
             self.imu_msg_.header.stamp = self.get_clock().now().to_msg()
             self.imu_pub_.publish(self.imu_msg_)

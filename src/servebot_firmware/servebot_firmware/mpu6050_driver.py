@@ -2,7 +2,6 @@
 import smbus
 import rclpy
 from rclpy.node import Node
-from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import Imu
 
 # ── MPU6050 register addresses ────────────────────────────────────────────
@@ -36,8 +35,7 @@ class MPU6050Driver(Node):
         self.is_connected_ = False
         self.init_i2c()
 
-        self.imu_pub_ = self.create_publisher(
-            Imu, "/imu/out", qos_profile=qos_profile_sensor_data)
+        self.imu_pub_ = self.create_publisher(Imu, "/imu/out", 10)
 
         self.imu_msg_ = Imu()
         self.imu_msg_.header.frame_id = "imu_link"

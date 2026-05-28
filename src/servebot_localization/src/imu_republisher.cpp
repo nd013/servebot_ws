@@ -9,7 +9,7 @@ void imuCallback(const sensor_msgs::msg::Imu &imu)
 {
   sensor_msgs::msg::Imu new_imu;
   new_imu = imu;
-  new_imu.header.frame_id = "base_footprint_ekf";
+  new_imu.header.frame_id = "imu_link_ekf";
   imu_pub->publish(new_imu);
 }
 

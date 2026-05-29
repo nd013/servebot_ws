@@ -18,27 +18,53 @@ def generate_launch_description():
         default_value="False",  # False for real robot (no /clock topic)
     )
 
-    use_python = LaunchConfiguration("use_python")
-    use_sim_time = LaunchConfiguration("use_sim_time")
+    sim_mode_arg = DeclareLaunchArgument(
+        "sim_mode",
+        default_value="False",  # False = real robot, True = Gazebo simulation
+    )
 
+    use_python  = LaunchConfiguration("use_python")
+    use_sim_time = LaunchConfiguration("use_sim_time")
+    sim_mode    = LaunchConfiguration("sim_mode")
+
+    pkg = get_package_share_directory("servebot_localization")
+    ekf_sim_config  = os.path.join(pkg, "config", "ekf.yaml")
+    ekf_real_config = os.path.join(pkg, "config", "ekf_real.yaml")
+
+    # Static TF: base_footprint_ekf → imu_link_ekf (both sim and real robot)
     static_transform_publisher = Node(
         package="tf2_ros",
         executable="static_transform_publisher",
-        arguments=["--x", "0", "--y", "0","--z", "0.103",
+        arguments=["--x", "0", "--y", "0", "--z", "0.103",
                    "--qx", "0", "--qy", "0", "--qz", "0", "--qw", "1",
                    "--frame-id", "base_footprint_ekf",
                    "--child-frame-id", "imu_link_ekf"],
     )
 
-    robot_localization = Node(
+    # Simulation EKF — odom_noisy (Gazebo noise plugin topic)
+    robot_localization_sim = Node(
         package="robot_localization",
         executable="ekf_node",
         name="ekf_filter_node",
         output="screen",
         parameters=[
-            os.path.join(get_package_share_directory("servebot_localization"), "config", "ekf.yaml"),
+            ekf_sim_config,
             {"use_sim_time": use_sim_time}
         ],
+        condition=IfCondition(sim_mode),
+    )
+
+    # Real robot EKF — servebot_controller/odom (real encoder odometry)
+    robot_localization_real = Node(
+        package="robot_localization",
+        executable="ekf_node",
+        name="ekf_filter_node",
+        output="screen",
+        parameters=[
+            ekf_real_config,
+            {"use_sim_time": False}
+        ],
+        condition=UnlessCondition(sim_mode),
     )
 
     imu_republisher_py = Node(
@@ -58,8 +84,10 @@ def generate_launch_description():
     return LaunchDescription([
         use_python_arg,
         use_sim_time_arg,
+        sim_mode_arg,
         static_transform_publisher,
-        robot_localization,
+        robot_localization_sim,
+        robot_localization_real,
         imu_republisher_py,
-        imu_republisher_cpp,   
+        imu_republisher_cpp,
     ])

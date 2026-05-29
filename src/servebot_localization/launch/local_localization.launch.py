@@ -31,7 +31,17 @@ def generate_launch_description():
     ekf_sim_config  = os.path.join(pkg, "config", "ekf.yaml")
     ekf_real_config = os.path.join(pkg, "config", "ekf_real.yaml")
 
-    # ── Simulation EKF (base_footprint_ekf, odom_noisy) ──────────────────────
+    # Static TF: base_footprint_ekf → imu_link_ekf (both sim and real robot)
+    static_transform_publisher = Node(
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        arguments=["--x", "0", "--y", "0", "--z", "0.103",
+                   "--qx", "0", "--qy", "0", "--qz", "0", "--qw", "1",
+                   "--frame-id", "base_footprint_ekf",
+                   "--child-frame-id", "imu_link_ekf"],
+    )
+
+    # Simulation EKF — odom_noisy (Gazebo noise plugin topic)
     robot_localization_sim = Node(
         package="robot_localization",
         executable="ekf_node",
@@ -44,17 +54,7 @@ def generate_launch_description():
         condition=IfCondition(sim_mode),
     )
 
-    # Static TF: base_footprint_ekf → imu_link_ekf (both sim and real robot)
-    static_transform_publisher = Node(
-        package="tf2_ros",
-        executable="static_transform_publisher",
-        arguments=["--x", "0", "--y", "0", "--z", "0.103",
-                   "--qx", "0", "--qy", "0", "--qz", "0", "--qw", "1",
-                   "--frame-id", "base_footprint_ekf",
-                   "--child-frame-id", "imu_link_ekf"],
-    )
-
-    # ── Real Robot EKF (base_footprint_ekf, servebot_controller/odom) ────────
+    # Real robot EKF — servebot_controller/odom (real encoder odometry)
     robot_localization_real = Node(
         package="robot_localization",
         executable="ekf_node",
@@ -67,7 +67,6 @@ def generate_launch_description():
         condition=UnlessCondition(sim_mode),
     )
 
-    # ── IMU republisher (shared by both modes) ────────────────────────────────
     imu_republisher_py = Node(
         package="servebot_localization",
         executable="imu_republisher.py",

@@ -8,7 +8,7 @@ imu_pub = None
 
 def imuCallback(imu):
     global imu_pub
-    imu.header.frame_id = "imu_link"
+    imu.header.frame_id = "imu_link_ekf"
     imu_pub.publish(imu)
 
 

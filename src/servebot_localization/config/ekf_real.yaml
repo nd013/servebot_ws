@@ -1,7 +1,5 @@
 ekf_filter_node:
     ros__parameters:
-      # Real robot EKF config
-      # EKF owns the odom→base_footprint TF (diff_drive TF is disabled via robot.launch.py override)
       frequency: 30.0
 
       two_d_mode: true
@@ -10,7 +8,7 @@ ekf_filter_node:
 
       map_frame: map
       odom_frame: odom
-      base_link_frame: base_footprint_ekf  # Real robot: EKF filtered frame alongside diff_drive
+      base_link_frame: base_footprint_ekf
       world_frame: odom
 
       # IMU — real MPU6050 via imu_republisher → imu_ekf topic
@@ -18,19 +16,19 @@ ekf_filter_node:
       imu0_config: [false, false, false,
                     false, false, false,
                     false, false, false,
-                    false, false, true,    # vyaw only — gz bias handled, no raw accel
+                    false, false, true,
                     false, false, false]
 
       imu0_differential: true
       imu0_pose_use_child_frame: false
 
-      # Odometry — real diff_drive_controller output
+      # Odometry — real diff_drive_controller (no noise plugin on real robot)
       odom0: servebot_controller/odom
 
       odom0_config: [false, false, false,
                      false, false, false,
-                     true,  true,  false,  # vx, vy
-                     false, false, true,   # vyaw
+                     true,  true,  false,
+                     false, false, true,
                      false, false, false]
 
       odom0_differential: true

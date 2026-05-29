@@ -74,7 +74,7 @@ def generate_launch_description():
     )
 
     # ── SIMULATION: include gazebo.launch.py ──────────────────────────────
-    # Gazebo starts ign_ros2_control which creates the controller_manager
+    # Gazebo starts gz_ros2_control which creates the controller_manager
 
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(

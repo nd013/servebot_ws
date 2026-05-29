@@ -32,9 +32,11 @@ def generate_launch_description():
     gazebo_resource_path = SetEnvironmentVariable(
         name="GZ_SIM_RESOURCE_PATH",
         value=[
-            str(Path(servebot_description).parent.resolve())])
+            str(Path(servebot_description).parent.resolve()),
+            ":",
+            os.path.join(servebot_description, "models")])
     
-    world_file = os.path.join(servebot_description, "worlds", "empty_imu.sdf")
+    world_file = os.path.join(servebot_description, "worlds", "small_house.world")
 
     gazebo = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
@@ -58,7 +60,7 @@ def generate_launch_description():
         executable="parameter_bridge",
         arguments=[
             "/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock",
-            "/imu@sensor_msgs/msg/Imu[ignition.msgs.IMU",
+            "/imu@sensor_msgs/msg/Imu[gz.msgs.IMU",
         ],
         remappings=[
             ('/imu', '/imu/out'),

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="servebot">
 
-    <!-- sim_mode=true  → ign_ros2_control (Gazebo)              -->
+    <!-- sim_mode=true  → gz_ros2_control (Gazebo Harmonic)      -->
     <!-- sim_mode=false → servebot_firmware/ServebotInterface (ESP32) -->
     <xacro:arg name="sim_mode" default="true"/>
 
@@ -9,7 +9,7 @@
 
         <hardware>
             <xacro:if value="$(arg sim_mode)">
-                <plugin>ign_ros2_control/IgnitionSystem</plugin>
+                <plugin>gz_ros2_control/GazeboSimSystem</plugin>
             </xacro:if>
             <xacro:unless value="$(arg sim_mode)">
                 <plugin>servebot_firmware/ServebotInterface</plugin>

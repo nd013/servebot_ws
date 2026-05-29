@@ -39,9 +39,9 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <origin xyz="0.0 0.0 0.096" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://servebot_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+        <box size="0.45 0.35 0.20"/>
       </geometry>
     </collision>
   </link>
@@ -72,9 +72,9 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0.0 0.0 0.0" rpy="3.14 0 0"/>
+      <origin xyz="0.0 0.0 0.0" rpy="1.5707 0 0"/>
       <geometry>
-        <mesh filename="package://servebot_description/meshes/wheel_right.stl" scale="0.001 0.001 0.001"/>
+        <cylinder radius="0.060" length="0.040"/>
       </geometry>
     </collision>
   </link>
@@ -105,9 +105,9 @@
       </material>
     </visual>
     <collision>
-       <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <origin xyz="0.0 0.0 0.0" rpy="1.5707 0 0"/>
       <geometry>
-        <mesh filename="package://servebot_description/meshes/wheel_left.stl" scale="0.001 0.001 0.001"/>
+        <cylinder radius="0.060" length="0.040"/>
       </geometry>
     </collision>
   </link>
@@ -137,9 +137,9 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://servebot_description/meshes/caster_front_right.stl" scale="0.001 0.001 0.001"/>
+        <sphere radius="0.022"/>
       </geometry>
     </collision>
   </link>
@@ -169,9 +169,9 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://servebot_description/meshes/caster_front_left.stl" scale="0.001 0.001 0.001"/>
+        <sphere radius="0.022"/>
       </geometry>
     </collision>
   </link>
@@ -201,9 +201,9 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://servebot_description/meshes/caster_rear_right.stl" scale="0.001 0.001 0.001"/>
+        <sphere radius="0.022"/>
       </geometry>
     </collision>
   </link>
@@ -233,9 +233,9 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://servebot_description/meshes/caster_rear_left.stl" scale="0.001 0.001 0.001"/>
+        <sphere radius="0.022"/>
       </geometry>
     </collision>
   </link>
@@ -260,7 +260,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://servebot_description/meshes/imu_link.STL" />
+        <box size="0.02 0.02 0.01"/>
       </geometry>
     </collision>
   </link>

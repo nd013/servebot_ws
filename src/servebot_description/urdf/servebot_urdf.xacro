@@ -116,7 +116,7 @@
   <joint name="caster_front_right_joint" type="fixed">
     <parent link="base_link"/>
     <child  link="caster_front_right"/>
-    <origin xyz="0.1975 -0.1625 0.04" rpy="0 0 0"/>
+    <origin xyz="0.1975 -0.1625 -0.015" rpy="0 0 0"/>
   </joint>
 
   <link name="caster_front_right">
@@ -128,7 +128,7 @@
                                                   izz="0.00003102"/>
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+      <origin xyz="0 0 0.055" rpy="-1.57 0 0"/>
       <geometry>
         <mesh filename="package://servebot_description/meshes/caster_front_right.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -148,7 +148,7 @@
   <joint name="caster_front_left_joint" type="fixed">
     <parent link="base_link"/>
     <child  link="caster_front_left"/>
-    <origin xyz="0.1975 0.1625 0.04" rpy="0 0 0"/>
+    <origin xyz="0.1975 0.1625 -0.015" rpy="0 0 0"/>
   </joint>
 
   <link name="caster_front_left">
@@ -160,7 +160,7 @@
                                                   izz="0.00003102"/>
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+      <origin xyz="0 0 0.055" rpy="-1.57 0 0"/>
       <geometry>
         <mesh filename="package://servebot_description/meshes/caster_front_left.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -180,7 +180,7 @@
   <joint name="caster_rear_right_joint" type="fixed">
     <parent link="base_link"/>
     <child  link="caster_rear_right"/>
-    <origin xyz="-0.1975 -0.1625 0.04" rpy="0 0 0"/>
+    <origin xyz="-0.1975 -0.1625 -0.015" rpy="0 0 0"/>
   </joint>
 
   <link name="caster_rear_right">
@@ -192,7 +192,7 @@
                                                   izz="0.00003102"/>
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+      <origin xyz="0 0 0.055" rpy="-1.57 0 0"/>
       <geometry>
         <mesh filename="package://servebot_description/meshes/caster_rear_right.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -212,7 +212,7 @@
   <joint name="caster_rear_left_joint" type="fixed">
     <parent link="base_link"/>
     <child  link="caster_rear_left"/>
-    <origin xyz="-0.1975 0.1625 0.04" rpy="0 0 0"/>
+    <origin xyz="-0.1975 0.1625 -0.015" rpy="0 0 0"/>
   </joint>
 
   <link name="caster_rear_left">
@@ -224,7 +224,7 @@
                                                   izz="0.00003102"/>
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+      <origin xyz="0 0 0.055" rpy="-1.57 0 0"/>
       <geometry>
         <mesh filename="package://servebot_description/meshes/caster_rear_left.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -271,7 +271,6 @@
     <child link="imu_link" />
     <axis xyz="0 0 0" />
   </joint>
-
 
 
 </robot>

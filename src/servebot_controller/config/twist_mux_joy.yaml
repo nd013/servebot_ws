@@ -1,0 +1,7 @@
+twist_mux:
+  ros__parameters:
+    topics:
+      joystick_turbo:
+        topic   : joy_vel_turbo
+        timeout : 0.5
+        priority: 100

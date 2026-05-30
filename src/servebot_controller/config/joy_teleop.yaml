@@ -2,8 +2,8 @@ joy_teleop:
   ros__parameters:
     move:
       type: topic
-      interface_type: geometry_msgs/msg/TwistStamped
-      topic_name: servebot_controller/cmd_vel
+      interface_type: geometry_msgs/msg/Twist
+      topic_name: joy_vel
       deadman_buttons: [5]
       axis_mappings:
         twist-linear-x:
